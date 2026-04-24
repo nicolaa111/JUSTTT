@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>For Lychee 💗</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #fceff9, #e0f7fa);
+    overflow: hidden;
+    text-align: center;
+}
+
+/* screens */
+.screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    background: rgba(255,255,255,0.92);
+    padding: 30px;
+    border-radius: 20px;
+    min-width: 300px;
+    position: relative;
+}
+
+button {
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: none;
+    margin: 8px;
+    cursor: pointer;
+    background: #a0e7e5;
+}
+
+.hidden { display: none; }
+
+/* hearts */
+.heart {
+    position: fixed;
+    bottom: -10px;
+    font-size: 20px;
+    animation: floatUp 4s linear;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-700px); opacity: 0; }
+}
+
+/* playlist */
+.playlist-wrap {
+    position: relative;
+    width: 420px;
+    max-width: 95vw;
+}
+
+.exit-btn {
+    position: absolute;
+    bottom: -45px;
+    right: 0;
+    background: #ff8fab;
+}
+
+#yesBtn {
+    position: absolute;
+}
+
+/* ACCESS DENIED STYLE */
+.glitch {
+    font-family: monospace;
+    font-size: 28px;
+    color: #ff2a2a;
+    text-shadow: 0 0 10px #8b0000, 0 0 25px black;
+    margin-top: 40vh;
+}
+
+/* dark mode screen */
+.red {
+    background: radial-gradient(circle, #1a0000, #000000) !important;
+    color: #ff2a2a;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="laughAudio" src="https://www.soundjay.com/human/laugh-1.mp3"></audio>
+
+<!-- LOGIN -->
+<div class="screen" id="login">
+    <div class="box">
+        <h2>Enter Password 🌸</h2>
+        <input type="password" id="pass">
+        <br>
+        <button onclick="checkPass()">Enter</button>
+    </div>
+</div>
+
+<!-- MENU -->
+<div class="screen hidden" id="menu">
+    <div class="box">
+        <h2>hiiiii</h2>
+        <button onclick="openExplore()">Explore</button>
+    </div>
+</div>
+
+<!-- EXPLORE -->
+<div class="screen hidden" id="explore">
+    <div class="box">
+        <h2>🎧</h2>
+        <p id="text"></p>
+
+        <div class="playlist-wrap">
+            <iframe 
+                style="border-radius:12px"
+                src="https://open.spotify.com/embed/playlist/7hZ9UBozuSzs2ffiPUEO4c?utm_source=generator"
+                width="100%" height="352"
+                frameborder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+            </iframe>
+
+            <button class="exit-btn" onclick="exitFlow()">Exit</button>
+        </div>
+    </div>
+</div>
+
+<!-- EXIT -->
+<div class="screen hidden" id="exitScene">
+    <div class="box">
+        <p id="exitText"></p>
+
+        <div id="choices" class="hidden">
+            <button id="yesBtn" onmouseover="moveYes()">Yes</button>
+            <button onclick="noChoice()">no i dont</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+/* ===== SPEECH ===== */
+function speak(t) {
+    if (!window.speechSynthesis) return;
+
+    let msg = new SpeechSynthesisUtterance(t);
+    msg.rate = 1;
+    msg.pitch = 1.2;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(msg);
+}
+
+/* ===== HEARTS ===== */
+function hearts() {
+    for (let i = 0; i < 25; i++) {
+        let h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "💗";
+        h.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(h);
+
+        setTimeout(() => h.remove(), 4000);
+    }
+}
+
+/* ===== LOGIN CHECK ===== */
+function checkPass() {
+    let p = document.getElementById("pass").value;
+
+    if (p === "oldman") {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("menu").classList.remove("hidden");
+        hearts();
+        speak("oh... you remembered it");
+    } else {
+        wrongPassword();
+    }
+}
+
+/* ===== WRONG PASSWORD (RETURN TO LOGIN) ===== */
+function wrongPassword() {
+    document.body.classList.add("red");
+
+    document.body.innerHTML = `
+        <div class="screen">
+            <div class="glitch" id="glitchBox">ACCESS DENIED</div>
+        </div>
+    `;
+
+    speak("Access denied");
+
+    setTimeout(() => glitch([
+        "SYSTEM BREACH DETECTED...",
+        "THAT'S NOT THE PASSWORD I GAVE",
+        "SO WHO ARE YOU LOGGING IN FOR?"
+    ], 0), 1200);
+
+    setTimeout(() => {
+        location.reload(); // return to login
+    }, 7000);
+}
+
+/* ===== GLITCH TEXT ===== */
+function glitch(lines, i) {
+    if (i >= lines.length) return;
+
+    document.getElementById("glitchBox").innerText = lines[i];
+    setTimeout(() => glitch(lines, i + 1), 1800);
+}
+
+/* ===== EXPLORE ===== */
+function openExplore() {
+    document.getElementById("menu").classList.add("hidden");
+    document.getElementById("explore").classList.remove("hidden");
+
+    hearts();
+
+    setTimeout(() => {
+        document.getElementById("text").innerText =
+        "these songs… somehow remind me of you";
+    }, 800);
+}
+
+/* ===== EXIT FLOW ===== */
+function exitFlow() {
+    document.getElementById("explore").classList.add("hidden");
+    document.getElementById("exitScene").classList.remove("hidden");
+
+    document.getElementById("exitText").innerText = "ERROR_403...";
+
+    setTimeout(() => {
+        document.getElementById("exitText").innerText = "oh you're leaving?";
+
+        setTimeout(() => {
+            document.getElementById("exitText").innerText = "so you got another girl?";
+            document.getElementById("choices").classList.remove("hidden");
+        }, 2000);
+
+    }, 2000);
+}
+
+/* ===== MOVING YES BUTTON ===== */
+function moveYes() {
+    let b = document.getElementById("yesBtn");
+    b.style.left = Math.random() * 70 + "vw";
+    b.style.top = Math.random() * 70 + "vh";
+}
+
+/* ===== FINAL NO CHOICE ===== */
+function noChoice() {
+    document.getElementById("exitText").innerText = "as it should 😌";
+
+    document.getElementById("laughAudio").play();
+
+    speak("k bye just remember I'm cute and you're just aging");
+
+    setTimeout(() => {
+        document.getElementById("laughAudio").pause();
+    }, 3000);
+}
+
+</script>
+
+</body>
+</html>
